@@ -3,7 +3,7 @@
 import os, random, requests, sys
 from datetime import datetime
 
-THINGSPEAK_WRITE_KEY = os.environ.get("THINGSPEAK_WRITE_KEY")
+THINGSPEAK_WRITE_KEY = os.environ.get("5FQJPLPUDF1BVP7O")
 THINGSPEAK_UPDATE_URL = "https://api.thingspeak.com/update.json"
 TEMP_MIN = 18.0
 TEMP_MAX = 42.0
