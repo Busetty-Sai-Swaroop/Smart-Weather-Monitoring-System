@@ -1,0 +1,21 @@
+name: ThingSpeak Simulator
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install requests
+      - name: Publish reading
+        env:
+          THINGSPEAK_WRITE_KEY: ${{ secrets.THINGSPEAK_WRITE_KEY }}
+        run: python simulator_post_once.py
