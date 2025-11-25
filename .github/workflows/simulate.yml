@@ -17,5 +17,5 @@ jobs:
         run: pip install requests
       - name: Publish reading
         env:
-          THINGSPEAK_WRITE_KEY: ${{ secrets.THINGSPEAK_WRITE_KEY }}
+          THINGSPEAK_WRITE_KEY: ${{ secrets.5FQJPLPUDF1BVP7O}}
         run: python simulator_post_once.py
