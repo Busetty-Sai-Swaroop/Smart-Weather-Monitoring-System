@@ -20,18 +20,6 @@ This project demonstrates how IoT devices can be used to collect environmental d
 - MQTT Protocol
 - Embedded C / MicroPython
 
-## 📂 Project Structure
-smart-weather-monitoring-system/
-│
-├── README.md
-├── Smart_Weather_Monitoring_System_Report.pdf
-├── code/
-│   └── esp32_weather_code.py
-├── diagrams/
-│   └── circuit_diagram.png
-└── screenshots/
-    └── output.png
-
 ## 🧪 Simulation & Results
 - Sensor readings are simulated using Wokwi
 - Data is published to Adafruit IO using MQTT
