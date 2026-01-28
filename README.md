@@ -1,21 +1,45 @@
-# Smart Weather Monitoring System (ThingSpeak-only, simulated sensors)
+# Smart Weather Monitoring System with Cloud Integration
 
-## What this repo does
-- Simulates temperature & humidity.
-- Posts readings to ThingSpeak channel.
-- Triggers ThingSpeak email alerts when temperature crosses threshold.
+An IoT-based smart weather monitoring system that simulates temperature and humidity data using an ESP32 and DHT22 sensor in Wokwi, and uploads the data to the Adafruit IO cloud platform for real-time visualization and alerts.
 
-## Files
-- simulator_thingspeak_alerts.py : main simulator & alerting script
-- .github/workflows/simulate.yml : GitHub Actions to run simulator on schedule
+## 📌 Project Overview
+This project demonstrates how IoT devices can be used to collect environmental data and integrate it with cloud services. Sensor data is continuously monitored and uploaded to the cloud, where it can be visualized on dashboards and used to trigger email alerts when predefined thresholds are exceeded.
 
-## Setup
-1. Create ThingSpeak account and channel (2 fields: temperature, humidity).
-2. Copy Channel Write API Key.
-3. In ThingSpeak Account → My Profile, generate Alerts API Key.
-4. Add keys as GitHub Secrets: THINGSPEAK_WRITE_KEY, THINGSPEAK_ALERTS_API_KEY, optionally TEMP_THRESHOLD.
-5. Push repo to GitHub and enable Actions.
+## ⚙️ Features
+- Real-time temperature and humidity monitoring
+- Cloud integration using Adafruit IO
+- Threshold-based email alerts
+- Data visualization using dashboards
+- Simulation-based implementation (no physical hardware required)
 
-## Notes
-- Free tier update interval: at least 15 seconds. Do not publish faster. :contentReference[oaicite:13]{index=13}
-- Alerts are limited to 2 per 30 minutes. Use cooldown logic. :contentReference[oaicite:14]{index=14}
+## 🛠️ Technologies Used
+- ESP32 (Simulated)
+- DHT22 Sensor
+- Wokwi IoT Simulator
+- Adafruit IO Cloud Platform
+- MQTT Protocol
+- Embedded C / MicroPython
+
+## 📂 Project Structure
+smart-weather-monitoring-system/
+│
+├── README.md
+├── Smart_Weather_Monitoring_System_Report.pdf
+├── code/
+│   └── esp32_weather_code.py
+├── diagrams/
+│   └── circuit_diagram.png
+└── screenshots/
+    └── output.png
+
+## 🧪 Simulation & Results
+- Sensor readings are simulated using Wokwi
+- Data is published to Adafruit IO using MQTT
+- Dashboards display live sensor values
+- Email notifications are triggered when temperature or humidity crosses set limits
+
+## 📄 Documentation
+The complete project report, including system architecture, circuit diagrams, implementation details, and results, is available in the PDF file included in this repository.
+
+## 🔗 Related Links
+- Wokwi Simulator: https://wokwi.com/projects/448673931344905217
