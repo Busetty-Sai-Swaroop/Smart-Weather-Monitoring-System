@@ -1,33 +1,78 @@
-# simulator_post_once.py
-# pip install requests
-import os, random, requests, sys
-from datetime import datetime
+import network
+import time
+from umqtt.simple import MQTTClient
+import dht
+from machine import Pin
 
-THINGSPEAK_WRITE_KEY = os.environ.get("5FQJPLPUDF1BVP7O")
-THINGSPEAK_UPDATE_URL = "https://api.thingspeak.com/update.json"
-TEMP_MIN = 18.0
-TEMP_MAX = 42.0
-HUM_MIN = 20.0
-HUM_MAX = 90.0
+# ---------------------------
+# USER SETTINGS
+# ---------------------------
+WIFI_SSID = "Wokwi-GUEST"
+WIFI_PASS = ""
 
-if not THINGSPEAK_WRITE_KEY:
-    print("ERROR: THINGSPEAK_WRITE_KEY not set")
-    sys.exit(1)
+AIO_USERNAME = "saiswaroop05" ## Adafruit username
+AIO_KEY = "aio_SSUK185R8Cvp8xyekFPjuV6Qf" # adafruit aio key
 
-def generate_reading():
-    temp = round(random.uniform(TEMP_MIN, TEMP_MAX), 2)
-    hum = round(random.uniform(HUM_MIN, HUM_MAX), 2)
-    return temp, hum
+AIO_FEED_TEMP = AIO_USERNAME + "/feeds/temperature"
+AIO_FEED_HUM  = AIO_USERNAME + "/feeds/humidity"
 
-def post(temp, hum):
-    payload = {"api_key": THINGSPEAK_WRITE_KEY, "field1": temp, "field2": hum}
-    r = requests.post(THINGSPEAK_UPDATE_URL, data=payload, timeout=10)
-    print(f"[{datetime.now().isoformat()}] POST status {r.status_code}, resp: {r.text}")
-    return r.status_code == 200
+# ---------------------------
+# DHT22 SENSOR
+# ---------------------------
+dht_pin = Pin(15, Pin.IN)
+sensor = dht.DHT22(dht_pin)
 
-if __name__ == "__main__":
-    temp, hum = generate_reading()
-    print(f"Generated -> temp: {temp}°C, hum: {hum}%")
-    success = post(temp, hum)
-    if not success:
-        sys.exit(2)
+# ---------------------------
+# CONNECT TO WIFI
+# ---------------------------
+def connect_wifi():
+    wifi = network.WLAN(network.STA_IF)
+    wifi.active(True)
+    wifi.connect(WIFI_SSID, WIFI_PASS)
+
+    print("Connecting to WiFi...", end="")
+    while not wifi.isconnected():
+        print(".", end="")
+        time.sleep(0.5)
+    print(" Connected!")
+    print(wifi.ifconfig())
+
+# ---------------------------
+# MQTT CONNECT
+# ---------------------------
+def connect_mqtt():
+    client = MQTTClient(
+        client_id="esp32_dht22",
+        server="io.adafruit.com",
+        user=AIO_USERNAME,
+        password=AIO_KEY,
+        ssl=False
+    )
+    client.connect()
+    print("Connected to Adafruit IO!")
+    return client
+
+# ---------------------------
+# MAIN PROGRAM
+# ---------------------------
+connect_wifi()
+mqtt_client = connect_mqtt()
+
+while True:
+    try:
+        sensor.measure()
+        temperature = sensor.temperature()
+        humidity = sensor.humidity()
+
+        print("Temp:", temperature, "°C  | Hum:", humidity, "%")
+
+        # Publish to Adafruit IO
+        mqtt_client.publish(AIO_FEED_TEMP, str(temperature))
+        mqtt_client.publish(AIO_FEED_HUM,  str(humidity))
+
+        print("Published to AIO!")
+
+    except Exception as e:
+        print("Sensor error:", e)
+
+    time.sleep(10)   # Read every 5 seconds
